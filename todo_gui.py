@@ -7,7 +7,8 @@ from datetime import date, datetime
 import sqlite3
 from sqlite3 import Error
 import os
-from tkinter import Tk, StringVar, Frame, Button, Label, Entry, Scrollbar, Listbox, Checkbutton, END, MULTIPLE, PhotoImage, messagebox
+from tkinter import Tk, StringVar, Frame, Button, Label, Entry, Scrollbar, Listbox, Checkbutton, END, MULTIPLE, PhotoImage, messagebox, Menu, Toplevel
+import json
 
 path = os.path.dirname(os.path.abspath(__file__))
 
@@ -38,13 +39,59 @@ else:
     conn.commit()
     conn.close()
 
+
+
+
 def main():
     window = Tk()
-    window.geometry('550x400')
+    window.geometry('650x400')
     window.resizable(width=0, height=0)
     window.title("Todo")
-    
+    #window.config(background = "#000000")
     window.iconphoto(False, PhotoImage(file=path + "/Icons/icon.png"))
+
+    menubar = Menu(window)
+    filemenu = Menu(menubar, tearoff=0)
+    #filemenu.add_command(label="Settings", command=config_window)
+    filemenu.add_separator()
+    filemenu.add_command(label="Exit", command=window.quit)
+    menubar.add_cascade(label="File", menu=filemenu)
+
+
+    def apply_configs():
+        a_file = open(path + "/config_file.json", 'r')
+        json_object = json.load(a_file)
+        a_file.close()
+
+        my_entry.config(fg=json_object['my_entry']['fg'])
+        my_entry.config(bg=json_object['my_entry']['bg'])
+
+        add_button.config(text=json_object['add_button']["text"])
+        add_button.config(borderwidth=json_object['add_button']["borderwidth"])
+        add_button.config(highlightthickness=json_object['add_button']["highlightthickness"])
+        add_button.config(fg=json_object['add_button']["fg"])
+        add_button.config(bg=json_object['add_button']["bg"])
+        add_button.config(activeforeground=json_object['add_button']["activeforeground"])
+        add_button.config(activebackground=json_object['add_button']["activebackground"])
+
+        delete_button.config(text=json_object['delete_button']["text"])
+        delete_button.config(borderwidth=json_object['delete_button']["borderwidth"])
+        delete_button.config(highlightthickness=json_object['delete_button']["highlightthickness"])
+        delete_button.config(fg=json_object['delete_button']["fg"])
+        delete_button.config(bg=json_object['delete_button']["bg"])
+        delete_button.config(activeforeground=json_object['delete_button']["activeforeground"])
+        delete_button.config(activebackground=json_object['delete_button']["activebackground"])
+
+        update_button.config(text=json_object['update_button']["text"])
+        update_button.config(borderwidth=json_object['update_button']["borderwidth"])
+        update_button.config(highlightthickness=json_object['update_button']["highlightthickness"])
+        update_button.config(fg=json_object['update_button']["fg"])
+        update_button.config(bg=json_object['update_button']["bg"])
+        update_button.config(activeforeground=json_object['update_button']["activeforeground"])
+        update_button.config(activebackground=json_object['update_button']["activebackground"])
+
+        lis.config(fg=json_object['lis']['fg'])
+        lis.config(bg=json_object['lis']['bg'])
 
     def list_tasks():
         try:
@@ -67,7 +114,7 @@ def main():
         selected_task = lis.curselection()
         all_task = lis.get(0, END)
         sel_task = [all_task[task] for task in selected_task]
-        
+
         try:
             conn = sqlite3.connect(path + "/task.db")
         except Error:
@@ -115,37 +162,45 @@ def main():
             cursor.execute("INSERT INTO TASK(id, desc, date) VALUES(?, ?, ?)", values)
             conn.commit()
             conn.close()
-            
+            my_entry.delete(0, END)
             # updating task list after adding new task
             update_task_list()
 
+    
+
     # creating entry and buttons with their respective function
-    Entry(window, textvariable=task_entry).place(x=1, y=1, width=200, height=25)
+    my_entry = Entry(window, textvariable = task_entry)
+    my_entry.place(x=5, y=20, width=200, height=25)
 
-    Button(window, text="Add", command=get_entry).place(x=210, y=1, height=25)
+    add_button = Button(window, command = get_entry)
+    add_button.place(x=210, y=20, height=25)
 
-    trash_icon = PhotoImage(file=path + "/Icons/trash.png")
-    Button(window, text="Delete", command=delete, image=trash_icon).place(x=520, y=15)
-    
-    quit_icon = PhotoImage(file=path + "/Icons/quit.png")
-    Button(window, text="Exit", command=quit, image=quit_icon).place(x=518, y=367)
-    
+    delete_button = Button(window, command=delete)
+    delete_button.place(x=582, y=20)
+
+    update_button = Button(window, command=apply_configs)
+    update_button.place(x=580, y=371)
+
     # creating scrollbar
     scrollbar = Scrollbar(window)
     scrollbar.pack(side="right", fill="none")
-    
-    # creating listbox
-    lis = Listbox(window, width=530, height=320, bg="white", selectmode=MULTIPLE, font=("normal", 12))
-    lis.pack(padx=0, pady=50)
+
+    # creating listbox (mini window where tasks are listed)
+    lis = Listbox(window,
+                  width=530,
+                  height=320,
+                  selectmode=MULTIPLE,
+                  font=("normal", 12))
+    lis.pack(padx=5, pady=50)
     lis.config(yscrollcommand = scrollbar.set)
 
     scrollbar.config(command=lis.yview)
 
-
-
     # listing task list when the user opens the program
+    apply_configs()
     list_tasks()
 
+    window.config(menu=menubar)
     window.mainloop()
 
 
