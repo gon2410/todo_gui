@@ -1,0 +1,37 @@
+{"description":"This is the json config file. You can modify this manually.",
+
+"my_entry": {
+    "fg":"#000000",
+    "bg": "#d0e1f9"},
+ 
+"add_button": {
+    "text": "Add",
+    "borderwidth": 0,
+    "highlightthickness": 0,
+    "fg": "#ffffff",
+    "bg": "#046B99",
+    "activeforeground": "#ffffff",
+    "activebackground": "#4d648d"},
+
+"delete_button": {
+    "text": "Delete",
+    "borderwidth": 0,
+    "highlightthickness": 2,
+    "fg": "#000000",
+    "bg": "#d32f2f",
+    "activeforeground": "#ffffff",
+    "activebackground": "#9a0007"},
+
+"update_button": {
+    "text": "Update",
+    "borderwidth": 0,
+    "highlightthickness": 0,
+    "fg": "#ffffff",
+    "bg": "#046B99",
+    "activeforeground": "#ffffff",
+    "activebackground": "#4d648d"},
+
+"lis": {
+    "bg": "#afbdc4",
+    "fg": "#000000"}
+}
