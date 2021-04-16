@@ -5,6 +5,7 @@
 - SQLite3
 - Json
 - pyperclip
+- datetime
 
 ## GIF
 
