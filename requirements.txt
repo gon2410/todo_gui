@@ -1,5 +1,0 @@
-datetime
-sqlite3
-tkinter
-json
-pyperclip
